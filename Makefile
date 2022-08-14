@@ -5,17 +5,25 @@
 # Default to the read only token - the read/write token will be present on Travis CI.
 # It's set as a secure environment variable in the .travis.yml file
 GITHUB_ORG="pactflow"
-PACTICIPANT ?= "pactflow-example-bi-directional-consumer-cypress"
+PACTICIPANT ?= "pactflow-example-bi-directional-consumer-playwright"
 GITHUB_WEBHOOK_UUID := "04510dc1-7f0a-4ed2-997d-114bfa86f8ad"
 PACT_CHANGED_WEBHOOK_UUID := "8e49caaa-0498-4cc1-9368-325de0812c8a"
 VERSION?=$(shell npx -y absolute-version)
 BRANCH?=$(shell git rev-parse --abbrev-ref HEAD)
 
+
+# Only deploy from main/master
+ifneq ($(filter $(BRANCH),main master),)
+	DEPLOY_TARGET=deploy
+else
+	DEPLOY_TARGET=no_deploy
+endif
+
 ## ====================
 ## Demo Specific Example Variables
 ## ====================
 REACT_APP_API_BASE_URL=http://localhost:3001
-PACT_FILES_LOCATION=cypress/pacts
+PACT_FILES_LOCATION=pacts
 
 ## ====================
 ## CI tasks
@@ -29,7 +37,7 @@ all_ruby_cli: ci_ruby_cli
 # Run the ci target from a developer machine with the environment variables
 # set as if it was on Github Actions.
 # Use this for quick feedback when playing around with your workflows.
-ci: test test_and_publish can_i_deploy $(DEPLOY_TARGET)
+ci: test_and_publish can_i_deploy $(DEPLOY_TARGET)
 
 # Run the ci target from a developer machine with the environment variables
 # set as if it was on CI.
@@ -41,7 +49,7 @@ fake_ci: .env
 test_and_publish: test publish_pacts
 
 publish_pacts: .env
-	@echo "\n========== STAGE: publish_pacts generated with cypress ==========\n"
+	@echo "\n========== STAGE: publish_pacts generated with playwright ==========\n"
 	@${PACT_BROKER_COMMAND} publish ${PACT_FILES_LOCATION} --consumer-app-version ${VERSION} --branch ${BRANCH}
 
 ## =====================
@@ -51,26 +59,20 @@ publish_pacts: .env
 install: npm install 
 
 test: .env
-	@echo "\n========== STAGE: test ✅ (cypress) ==========\n"
+	@echo "\n========== STAGE: test ✅ (playwright) ==========\n"
 	npm run start:ui:and:test
 
 ## =====================
 ## Deploy tasks
 ## =====================
 
-# Only deploy from main/master
-ifneq ($(filter $(BRANCH),main master),)
-	DEPLOY_TARGET=deploy
-else
-	DEPLOY_TARGET=no_deploy
-endif
 
 create_environment:
 	@"${PACT_BROKER_COMMAND}" create-environment --name production --production
 
 deploy: deploy_app record_deployment
 
-deploy_target: can_i_deploy $(DEPLOY_TARGET)
+deploy_target: $(DEPLOY_TARGET)
 
 no_deploy:
 	@echo "Not deploying as not on main branch"
@@ -205,3 +207,5 @@ install-pact-ruby-standalone:
 		./pact/bin/pact-provider-verifier --help && \
 		./pact/bin/pactflow help;; \
 	esac
+
+.PHONY: test

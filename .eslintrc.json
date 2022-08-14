@@ -9,11 +9,7 @@
     "es6": true,
     "jest": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:cypress/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly",
@@ -27,10 +23,6 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "cypress"
-  ],
-  "rules": {
-  }
+  "plugins": ["react", "playwright"],
+  "rules": {}
 }

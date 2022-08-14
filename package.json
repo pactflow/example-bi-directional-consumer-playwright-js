@@ -1,10 +1,9 @@
 {
-  "name": "example-bi-directional-consumer-cypress",
+  "name": "example-bi-directional-consumer-playwright",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "axios": "^0.21.1",
-    "lodash": "^4.17.21",
     "prop-types": "15.7.2",
     "react": "^16.13.1",
     "react-dom": "16.12.0",
@@ -17,12 +16,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "cross-env CI=true react-scripts test",
+    "pretest": "rimraf pacts",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open",
-    "cypress": "cypress run",
-    "cypress:headless:chrome": "cypress run --browser chrome --headless",
-    "start:ui:and:test": "start-server-and-test start http://localhost:3000 cypress:headless:chrome"
+    "test:cra": "react-scripts test",
+    "test": "playwright test",
+    "start:ui:and:test": "start-server-and-test start http://localhost:3000 test"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,22 +38,21 @@
     ]
   },
   "devDependencies": {
-    "@pactflow/pact-cypress-adapter": "^1.2.6",
+    "@playwright/test": "^1.25.0",
     "@testing-library/jest-dom": "4.2.4",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.3",
-    "cypress": "^9.5.0",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-react-app": "^5.2.1",
-    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-flowtype": "^3.13.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.3",
     "eslint-plugin-react-hooks": "^1.7.0",
+    "lodash": "^4.17.21",
     "start-server-and-test": "^1.14.0"
   }
 }

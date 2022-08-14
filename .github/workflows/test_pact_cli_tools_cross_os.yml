@@ -66,7 +66,7 @@ jobs:
     env:
       PACT_TOOL: ${{ matrix.pact_tool }}
       BRANCH: ${{ needs.setup.outputs.BRANCH }}
-      PACTICIPANT: "pactflow-example-bi-directional-consumer-cypress-${{ matrix.os }}-${{ matrix.node-version }}-${{ matrix.pact_tool }}"
+      PACTICIPANT: "pactflow-example-bi-directional-consumer-playwright-${{ matrix.os }}-${{ matrix.node-version }}-${{ matrix.pact_tool }}"
       PACT_PROVIDER: ${{ matrix.pact_provider }}
       PACT_CLI_VERSION: ${{ needs.setup.outputs.PACT_CLI_VERSION}}
       PACT_TOOL_USER_CHOICE: ${{ needs.setup.outputs.PACT_TOOL }}

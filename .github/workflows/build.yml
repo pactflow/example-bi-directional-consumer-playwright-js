@@ -11,7 +11,7 @@ env:
   VERSION: ${{ github.sha }}
   GIT_REF: ${{ github.ref }}
   PACT_PROVIDER: pactflow-example-bi-directional-provider-postman
-  PACTICIPANT: pactflow-example-bi-directional-consumer-cypress
+  PACTICIPANT: pactflow-example-bi-directional-consumer-playwright
 
 jobs:
   test:

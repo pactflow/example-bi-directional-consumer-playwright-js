@@ -31,6 +31,7 @@ yarn-error.log*
 pacts/
 logs/
 
-# cypress
-videos/
-screenshots/
+# playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -1,12 +1,12 @@
-# Example NodeJS/React Consumer - Cypress (BYO Adapter)
+# Example NodeJS/React Consumer - playwright (BYO Adapter)
 
-[![Build](https://github.com/pactflow/example-bi-directional-consumer-cypress/actions/workflows/build.yml/badge.svg)](https://github.com/pactflow/example-bi-directional-consumer-cypress/actions/workflows/build.yml)
+[![Build](https://github.com/pactflow/example-bi-directional-consumer-playwright/actions/workflows/build.yml/badge.svg)](https://github.com/pactflow/example-bi-directional-consumer-playwright/actions/workflows/build.yml)
 
-[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-cypress/branches/main/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-cypress/branches/main/latest-version/can-i-deploy/to-environment/production/badge)
+[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-playwright/branches/main/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-playwright/branches/main/latest-version/can-i-deploy/to-environment/production/badge)
 
-- [Example NodeJS/React Consumer - Cypress (BYO Adapter)](#example-nodejsreact-consumer---cypress-byo-adapter)
+- [Example NodeJS/React Consumer - playwright (BYO Adapter)](#example-nodejsreact-consumer---playwright-byo-adapter)
   - [Overview of Example](#overview-of-example)
-    - [Key points with Cypress](#key-points-with-cypress)
+    - [Key points with playwright](#key-points-with-playwright)
   - [Overview of Part of Bi-Directional Contract Testing Flow](#overview-of-part-of-bi-directional-contract-testing-flow)
   - [Compatibile with Providers](#compatibile-with-providers)
   - [Pre-requisites](#pre-requisites)
@@ -23,7 +23,7 @@
 
 <!-- Consumer Overview -->
 
-This is an example of a React "Product" API consumer that uses Cypress, [pact-cypress-adapter](https://www.npmjs.com/package/@pactflow/pact-cypress-adapter), [Pactflow](https://pactflow.io) and GitHub Actions to generate and publish Pact consumer contracts.
+This is an example of a React "Product" API consumer that uses playwright, [pact-playwright-adapter](https://www.npmjs.com/package/@pactflow/pact-playwright-adapter), [Pactflow](https://pactflow.io) and GitHub Actions to generate and publish Pact consumer contracts.
 
 It performs pre-deployment cross-compatibility checks to ensure that it is compatible with specified providers using the Bi-Directional contract capability of Pactflow.
 
@@ -31,13 +31,13 @@ It performs pre-deployment cross-compatibility checks to ensure that it is compa
 
 See the full [Pactflow Bi-Directional Workshop](https://docs.pactflow.io/docs/workshops/bi-directional-contract-testing) for which this can be substituted in as the "consumer".
 
-### Key points with Cypress
+### Key points with playwright
 
 It:
 
 - It a React app implementing a "Product" website created with Create React App
-- It utilises Cypress to functionally test the website
-- It utilises [pact-cypress-adapter](https://www.npmjs.com/package/@pactflow/pact-cypress-adapter) to transform cypress mocks into Pact consumer contracts.
+- It utilises playwright to functionally test the website
+- It utilises [pact-playwright-adapter](https://www.npmjs.com/package/@pactflow/pact-playwright-adapter) to transform playwright mocks into Pact consumer contracts.
 
 ## Overview of Part of Bi-Directional Contract Testing Flow
 
@@ -102,7 +102,7 @@ Set `PACT_PROVIDER` to one of the following
 
 ### Steps
 
-NOTE: Cypress tests are located in `./cypress/integration`. See below for how to start cypress test, generate consumer contract and publish contract to pactflow.
+NOTE: playwright tests are located in `./playwright/integration`. See below for how to start playwright test, generate consumer contract and publish contract to pactflow.
 
 - `make install` - install project dependencies
 
@@ -133,13 +133,13 @@ Using alternate pact CLI tools.
 - `PACT_TOOL=ruby_standalone make ci` - run the CI process, using the pact standalone CLI tool
 - `PACT_TOOL=ruby_cli make ci` - run the CI process, using the pact ruby CLI tool
 
-_How to use Cypress_
+\_How to use Playwright
 
 - Spin up the ui project by running `npm run start`
-- Define your pact provider and consumer name at `cypress.json` as cypress environment variables
+- Define your pact provider and consumer name at `playwright.json` as playwright environment variables
 - You can stub your network request and response with `cy.intercept`, and record network call to a consumer driven contract with `cy.usePactWait`. Each request you want to add to the contract must call this method.
-- `npm run cypress:headless:chrome` - this will run cypress e2e test in headless mode, and write stubbed network calls a pact file
-- `npm run cypress:run` - this will run cypress e2e test with browser ui
+- `npm run playwright:headless:chrome` - this will run playwright e2e test in headless mode, and write stubbed network calls a pact file
+- `npm run playwright:run` - this will run playwright e2e test with browser ui
 
 ## OS/Platform specific considerations
 
