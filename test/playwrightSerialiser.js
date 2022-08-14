@@ -76,13 +76,10 @@ export const transformPlaywrightMatchToPact = async (route, opts) => {
       pactSpecification: {
         version: '2.0.0'
       },
-      tools: [
-        {
-          name: 'pact-playwright-js',
-          version: '0.0.1',
-          adapter: true
-        }
-      ]
+      client: {
+        name: 'pact-playwright-js',
+        version: '0.0.1'
+      }
     }
   }
   const pact = readPactFileOrDefault(filePath, defaultPact)
