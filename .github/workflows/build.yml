@@ -23,6 +23,8 @@ jobs:
           node-version: "14"
       - name: Install
         run: npm i
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: Test
         run: make test
       - name: Publish pacts
