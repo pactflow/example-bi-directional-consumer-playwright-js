@@ -23,7 +23,7 @@
 
 <!-- Consumer Overview -->
 
-This is an example of a React "Product" API consumer that uses playwright, [pact-playwright-adapter](https://www.npmjs.com/package/@pactflow/pact-playwright-adapter), [Pactflow](https://pactflow.io) and GitHub Actions to generate and publish Pact consumer contracts.
+This is an example of a React "Product" API consumer that uses playwright & [Pactflow](https://pactflow.io) and GitHub Actions to generate and publish Pact consumer contracts.
 
 It performs pre-deployment cross-compatibility checks to ensure that it is compatible with specified providers using the Bi-Directional contract capability of Pactflow.
 
@@ -37,7 +37,7 @@ It:
 
 - It a React app implementing a "Product" website created with Create React App
 - It utilises playwright to functionally test the website
-- It utilises [pact-playwright-adapter](https://www.npmjs.com/package/@pactflow/pact-playwright-adapter) to transform playwright mocks into Pact consumer contracts.
+- It utilises a small helper file to cover playwright routes into pact interactions
 
 ## Overview of Part of Bi-Directional Contract Testing Flow
 
@@ -136,10 +136,31 @@ Using alternate pact CLI tools.
 \_How to use Playwright
 
 - Spin up the ui project by running `npm run start`
-- Define your pact provider and consumer name at `playwright.json` as playwright environment variables
-- You can stub your network request and response with `cy.intercept`, and record network call to a consumer driven contract with `cy.usePactWait`. Each request you want to add to the contract must call this method.
-- `npm run playwright:headless:chrome` - this will run playwright e2e test in headless mode, and write stubbed network calls a pact file
-- `npm run playwright:run` - this will run playwright e2e test with browser ui
+- Run your playwright tests with `npm run test`
+
+Look at one of the tests `test/productByQuery.spec.js`
+
+1. Import `transformPlaywrightMatchToPact` from `test/playwrightSerialiser.js`
+2. add `transformPlaywrightMatchToPact` function call into your playwright [route](https://playwright.dev/docs/api/class-page#page-route)
+
+```js
+const { transformPlaywrightMatchToPact } = require('./playwrightSerialiser')
+
+await page.route(productApiPath + '/products?id=2', async (route) => {
+  const response = {
+    status: 200,
+    body: JSON.stringify(testData),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  route.fulfill(response)
+  const pacticipant = 'pactflow-example-bi-directional-consumer-playwright'
+  const provider = process.env.PACT_PROVIDER || 'pactflow-example-bi-directional-provider-dredd'
+  await transformPlaywrightMatchToPact(route, { pacticipant, provider })
+  return
+})
+```
 
 ## OS/Platform specific considerations
 
