@@ -1,5 +1,5 @@
 {
-  "name": "example-bi-directional-consumer-playwright",
+  "name": "example-bi-directional-consumer-playwright-js",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

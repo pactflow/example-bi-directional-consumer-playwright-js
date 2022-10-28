@@ -1,8 +1,8 @@
 # Example NodeJS/React Consumer - playwright (BYO Adapter)
 
-[![Build](https://github.com/pactflow/example-bi-directional-consumer-playwright/actions/workflows/build.yml/badge.svg)](https://github.com/pactflow/example-bi-directional-consumer-playwright/actions/workflows/build.yml)
+[![Build](https://github.com/pactflow/example-bi-directional-consumer-playwright-js/actions/workflows/build.yml/badge.svg)](https://github.com/pactflow/example-bi-directional-consumer-playwright-js/actions/workflows/build.yml)
 
-[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-playwright/branches/main/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-playwright/branches/main/latest-version/can-i-deploy/to-environment/production/badge)
+[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-playwright-js/branches/main/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-playwright-js/branches/main/latest-version/can-i-deploy/to-environment/production/badge)
 
 - [Example NodeJS/React Consumer - playwright (BYO Adapter)](#example-nodejsreact-consumer---playwright-byo-adapter)
   - [Overview of Example](#overview-of-example)
@@ -155,7 +155,7 @@ await page.route(productApiPath + '/products?id=2', async (route) => {
     }
   }
   route.fulfill(response)
-  const pacticipant = 'pactflow-example-bi-directional-consumer-playwright'
+  const pacticipant = 'pactflow-example-bi-directional-consumer-playwright-js'
   const provider = process.env.PACT_PROVIDER || 'pactflow-example-bi-directional-provider-dredd'
   await transformPlaywrightMatchToPact(route, { pacticipant, provider })
   return

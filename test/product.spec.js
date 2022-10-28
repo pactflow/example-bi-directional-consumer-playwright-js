@@ -16,7 +16,7 @@ test('product page', async ({ page }) => {
         'Content-Type': 'application/json'
       }
     })
-    const pacticipant = 'pactflow-example-bi-directional-consumer-playwright'
+    const pacticipant = 'pactflow-example-bi-directional-consumer-playwright-js'
     const provider = process.env.PACT_PROVIDER || 'pactflow-example-bi-directional-provider-dredd'
     await transformPlaywrightMatchToPact(route, { pacticipant, provider })
     return

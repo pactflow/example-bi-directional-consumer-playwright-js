@@ -5,7 +5,7 @@
 # Default to the read only token - the read/write token will be present on Travis CI.
 # It's set as a secure environment variable in the .travis.yml file
 GITHUB_ORG="pactflow"
-PACTICIPANT ?= "pactflow-example-bi-directional-consumer-playwright"
+PACTICIPANT ?= "pactflow-example-bi-directional-consumer-playwright-js"
 GITHUB_WEBHOOK_UUID := "04510dc1-7f0a-4ed2-997d-114bfa86f8ad"
 PACT_CHANGED_WEBHOOK_UUID := "8e49caaa-0498-4cc1-9368-325de0812c8a"
 VERSION?=$(shell npx -y absolute-version)
