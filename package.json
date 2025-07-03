@@ -40,8 +40,8 @@
   "devDependencies": {
     "@playwright/test": "1.53.1",
     "@testing-library/jest-dom": "6.6.3",
-    "@typescript-eslint/eslint-plugin": "8.34.1",
-    "@typescript-eslint/parser": "8.34.1",
+    "@typescript-eslint/eslint-plugin": "8.35.1",
+    "@typescript-eslint/parser": "8.35.1",
     "@babel/eslint-parser": "7.27.5",
     "cross-env": "7.0.3",
     "dotenv": "16.5.0",
