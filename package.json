@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.55.0",
-    "@testing-library/jest-dom": "6.7.0",
+    "@testing-library/jest-dom": "6.8.0",
     "@typescript-eslint/eslint-plugin": "8.40.0",
     "@typescript-eslint/parser": "8.40.0",
     "@babel/eslint-parser": "7.28.0",
