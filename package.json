@@ -54,6 +54,6 @@
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "4.6.2",
     "lodash": "4.17.21",
-    "start-server-and-test": "2.1.2"
+    "start-server-and-test": "2.1.3"
   }
 }
