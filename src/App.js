@@ -66,7 +66,7 @@ function App() {
   const [searchText, setSearchText] = useState('')
   const [products, setProducts] = useState([])
   const [visibleProducts, setVisibleProducts] = useState([])
-  
+
   const id = new URLSearchParams(location.search).get('id') || undefined
 
   useEffect(() => {
