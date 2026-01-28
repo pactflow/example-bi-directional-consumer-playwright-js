@@ -12,6 +12,7 @@ const routing = (
       <Routes>
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/products/:id" element={<ProductPage />} />
+        <Route path="/products" element={<App />} />
         <Route path="/" element={<App />} />
       </Routes>
     </div>
