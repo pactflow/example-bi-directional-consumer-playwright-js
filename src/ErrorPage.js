@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom'
 
 function ErrorPage() {
   const location = useLocation()
-  
+
   return (
     <Layout>
       <Heading text="Sad times :(" href="/" />
