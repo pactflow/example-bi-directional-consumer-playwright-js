@@ -24,12 +24,8 @@ function ProductTableRow(props) {
       <td>
         <Link
           className="btn btn-link"
-          to={{
-            pathname: '/products/' + props.product.id,
-            state: {
-              product: props.product
-            }
-          }}
+          to={'/products/' + props.product.id}
+          state={{ product: props.product }}
         >
           See more!
         </Link>
