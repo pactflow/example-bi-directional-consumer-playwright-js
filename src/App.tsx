@@ -1,9 +1,9 @@
-import { type ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import "spectre.css/dist/spectre.min.css";
 import "spectre.css/dist/spectre-icons.min.css";
 import "spectre.css/dist/spectre-exp.min.css";
-import API from "./api";
+import { api } from "./api";
 import Heading from "./Heading";
 import Layout from "./Layout";
 import type { Product } from "./product";
@@ -55,7 +55,8 @@ function App() {
   const id = new URLSearchParams(location.search).get("id") ?? undefined;
 
   useEffect(() => {
-    API.getAllProducts(id)
+    api
+      .getAllProducts(id)
       .then((r) => {
         setLoading(false);
         setProducts(r);
@@ -75,9 +76,9 @@ function App() {
       )
     : products;
 
-  const onSearchTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onSearchTextChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-  };
+  }, []);
 
   return (
     <Layout>

@@ -39,4 +39,4 @@ export class API {
   }
 }
 
-export default new API();
+export const api = new API();
