@@ -6,13 +6,14 @@
 
 - [Example NodeJS/React Consumer - playwright (BYO Adapter)](#example-nodejsreact-consumer---playwright-byo-adapter)
   - [Overview of Example](#overview-of-example)
-    - [Key points with playwright](#key-points-with-playwright)
+    - [Key points with Playwright](#key-points-with-playwright)
   - [Overview of Part of Bi-Directional Contract Testing Flow](#overview-of-part-of-bi-directional-contract-testing-flow)
-  - [Compatibile with Providers](#compatibile-with-providers)
+  - [Compatible with Providers](#compatible-with-providers)
   - [Pre-requisites](#pre-requisites)
     - [Environment variables](#environment-variables)
   - [Usage](#usage)
     - [Steps](#steps)
+    - [Writing a Playwright spec that generates a contract](#writing-a-playwright-spec-that-generates-a-contract)
   - [OS/Platform specific considerations](#osplatform-specific-considerations)
   - [Caveats](#caveats)
   - [Related topics / posts / discussions](#related-topics--posts--discussions)
@@ -23,7 +24,7 @@
 
 <!-- Consumer Overview -->
 
-This is an example of a React "Product" API consumer that uses playwright & [Pactflow](https://pactflow.io) and GitHub Actions to generate and publish Pact consumer contracts.
+This is an example of a React "Product" API consumer that uses Playwright & [Pactflow](https://pactflow.io) and GitHub Actions to generate and publish Pact consumer contracts.
 
 It performs pre-deployment cross-compatibility checks to ensure that it is compatible with specified providers using the Bi-Directional contract capability of Pactflow.
 
@@ -31,13 +32,34 @@ It performs pre-deployment cross-compatibility checks to ensure that it is compa
 
 See the full [Pactflow Bi-Directional Workshop](https://docs.pactflow.io/docs/workshops/bi-directional-contract-testing) for which this can be substituted in as the "consumer".
 
-### Key points with playwright
+### Key points with Playwright
 
-It:
+Unlike the Pact-native consumer examples, this project has no Pact mock-provider
+library in the loop. Instead it demonstrates the "bring your own adapter"
+pattern:
 
-- It a React app implementing a "Product" website created with Create React App
-- It utilises playwright to functionally test the website
-- It utilises a small helper file to cover playwright routes into pact interactions
+- It's a React app implementing a "Product" website, built with Vite and
+  TypeScript.
+- Playwright drives the app end-to-end in a real browser and intercepts every
+  outbound request to the provider API with [`page.route()`](https://playwright.dev/docs/api/class-page#page-route).
+- `test/playwrightSerialiser.ts` is a small, hand-written adapter — not a Pact
+  library — that converts each intercepted request/response exchange into a
+  Pact interaction and appends it to a contract file under `pacts/`.
+  - Interactions are deduplicated by their generated `description` (method,
+    path, status and query string): the first interaction with a given
+    description wins, later ones with the same description are dropped. Pass
+    `keepDupeDescs: true` to keep every interaction instead, including
+    duplicates.
+  - A small `AUTOGEN_HEADER_BLOCKLIST` strips headers that Playwright or the
+    browser attach and that carry no contract meaning (`user-agent`,
+    `sec-fetch-*`, `accept-encoding`, `date`, `connection`,
+    `cache-control`, `pragma`, and similar), so the published contract only
+    asserts on headers the application itself cares about.
+
+Because the contract is assembled by hand rather than recorded by a Pact
+mock server, this example is a template for teams using an HTTP testing tool
+that has no native Pact integration: the same pattern — intercept, transform,
+write — works for any framework that can intercept outbound requests.
 
 ## Overview of Part of Bi-Directional Contract Testing Flow
 
@@ -63,7 +85,7 @@ When you run the CI pipeline (see below for doing this), the pipeline should per
 
 ![Consumer Pipeline](docs./../docs/consumer-pipeline.png 'Consumer Pipeline')
 
-## Compatibile with Providers
+## Compatible with Providers
 
 <!-- Provider Compatability -->
 
@@ -80,13 +102,22 @@ See [Environment variables](#environment-variables) on how to set these up.
 
 **Software**:
 
+- [Node.js 24](https://nodejs.org/) (LTS) or later
 - Tools listed at: https://docs.pactflow.io/docs/workshops/ci-cd/set-up-ci/prerequisites/
 - A pactflow.io account with an valid [API token](https://docs.pactflow.io/docs/getting-started/#configuring-your-api-token)
 
+Install dependencies with `npm ci` (or `make install`, which does the same
+thing).
+
 ### Environment variables
 
-To be able to run some of the commands locally, you will need to export the following environment variables into your shell:
+To be able to run some of the commands locally, you will need to export the following environment variables into your shell, or copy [`.env.example`](.env.example) to `.env` and fill it in:
 
+- `VITE_API_BASE_URL`: the base URL of the provider API. Playwright intercepts
+  every request to this origin, so nothing actually listens here during a
+  test run — but the value must match `src/api.ts`, the specs, the Makefile
+  and CI, or interception silently misses and no contract is written.
+  Defaults to `http://localhost:8080`.
 - `PACT_BROKER_TOKEN`: a valid [API token](https://docs.pactflow.io/docs/getting-started/#configuring-your-api-token) for Pactflow
 - `PACT_BROKER_BASE_URL`: a fully qualified domain name with protocol to your pact broker e.g. https://testdemo.pactflow.io
 
@@ -102,17 +133,20 @@ Set `PACT_PROVIDER` to one of the following
 
 ### Steps
 
-NOTE: playwright tests are located in `./playwright/integration`. See below for how to start playwright test, generate consumer contract and publish contract to pactflow.
+NOTE: Playwright tests are located in `./test`. See below for how to start
+Playwright, generate the consumer contract, and publish the contract to
+Pactflow.
 
 - `make install` - install project dependencies
 
 Run each step separately
 
-- `make test_and_publish` - tests the provider and publishes provider contracts to Pactflow
+- `make test_and_publish` - runs the Playwright tests (which generate the
+  contract) and publishes the generated pact(s) to Pactflow
   - This will perform the following 2 calls
     - `make test`
-    - `make publish_provider_contract`
-- `make can_i_deploy` - runs can-i-deploy to check if its safe to deploy the provider
+    - `make publish_pacts`
+- `make can_i_deploy` - runs can-i-deploy to check if its safe to deploy the consumer
 - `make deploy` - deploys the app and records deployment
 
 or run the whole lot in one go
@@ -125,7 +159,6 @@ If you don't have docker, you can use one of the ruby tools. The standalone, doe
 
 - `make install-pact-ruby-cli` - installs the pact ruby CLI tool
 - `make install-pact-ruby-standalone` - installs the pact standalone CLI depending on your platform
-- `make uninstall-pact-ruby-standalone` - uninstalls the pact standalone CLI
 
 Using alternate pact CLI tools.
 
@@ -133,33 +166,41 @@ Using alternate pact CLI tools.
 - `PACT_TOOL=ruby_standalone make ci` - run the CI process, using the pact standalone CLI tool
 - `PACT_TOOL=ruby_cli make ci` - run the CI process, using the pact ruby CLI tool
 
-\_How to use Playwright
+Outside of the Makefile, the npm scripts are:
 
-- Spin up the ui project by running `npm run start`
-- Run your playwright tests with `npm run test`
+- `npm run dev` - start the Vite dev server on its own, for manual poking around
+- `npm test` - run the Playwright suite. It starts the dev server itself (via
+  Playwright's `webServer` option), runs every spec, and writes the generated
+  contract(s) to `pacts/`. There is no separate "start the app" step.
+- `npm run test:report` - open the HTML report from the last `npm test` run
+- `npm run build` - type-check and build the production bundle with Vite
+- `npm run preview` - preview the production build locally
+- `npm run type-check` - `tsc --build` with no emit
+- `npm run lint` / `npm run lint:fix` - Biome lint, with an autofix variant
+- `npm run format` / `npm run format:fix` - Biome format check/write
+- `npm run check` / `npm run check:fix` - Biome lint + format together
 
-Look at one of the tests `test/productByQuery.spec.js`
+### Writing a Playwright spec that generates a contract
 
-1. Import `transformPlaywrightMatchToPact` from `test/playwrightSerialiser.js`
-2. add `transformPlaywrightMatchToPact` function call into your playwright [route](https://playwright.dev/docs/api/class-page#page-route)
+Look at one of the tests, e.g. `test/productByQuery.spec.ts`.
 
-```js
-const { transformPlaywrightMatchToPact } = require('./playwrightSerialiser')
+1. Import `transformPlaywrightMatchToPact` from `./playwrightSerialiser`.
+2. Call it inside your Playwright [route](https://playwright.dev/docs/api/class-page#page-route) handler, after fulfilling the route.
 
-await page.route(productApiPath + '/products?id=2', async (route) => {
-  const response = {
+```ts
+import { transformPlaywrightMatchToPact } from "./playwrightSerialiser";
+
+await page.route(`${API_BASE_URL}/products?id=2`, async (route) => {
+  await route.fulfill({
     status: 200,
     body: JSON.stringify(testData),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-  route.fulfill(response)
-  const pacticipant = 'pactflow-example-bi-directional-consumer-playwright-js'
-  const provider = process.env.PACT_PROVIDER || 'pactflow-example-bi-directional-provider-dredd'
-  await transformPlaywrightMatchToPact(route, { pacticipant, provider })
-  return
-})
+    headers: { "Content-Type": "application/json" },
+  });
+  await transformPlaywrightMatchToPact(route, {
+    pacticipant: "pactflow-example-bi-directional-consumer-playwright-js",
+    provider: process.env.PACT_PROVIDER ?? "pactflow-example-bi-directional-provider-dredd",
+  });
+});
 ```
 
 ## OS/Platform specific considerations
