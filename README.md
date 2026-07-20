@@ -49,7 +49,9 @@ pattern:
     path, status and query string): the first interaction with a given
     description wins, later ones with the same description are dropped. Pass
     `keepDupeDescs: true` to keep every interaction instead, including
-    duplicates.
+    duplicates — useful when the same method/path/status/query legitimately
+    produces different response bodies (e.g. pagination or randomised data)
+    and each variant needs to appear in the contract.
   - A small `AUTOGEN_HEADER_BLOCKLIST` strips headers that Playwright or the
     browser attach and that carry no contract meaning (`user-agent`,
     `sec-fetch-*`, `accept-encoding`, `date`, `connection`,
@@ -184,10 +186,11 @@ Outside of the Makefile, the npm scripts are:
 
 Look at one of the tests, e.g. `test/productByQuery.spec.ts`.
 
-1. Import `transformPlaywrightMatchToPact` from `./playwrightSerialiser`.
+1. Import `API_BASE_URL`, `PACTICIPANT` and `PROVIDER` from `./pactOptions`, and `transformPlaywrightMatchToPact` from `./playwrightSerialiser`.
 2. Call it inside your Playwright [route](https://playwright.dev/docs/api/class-page#page-route) handler, after fulfilling the route.
 
 ```ts
+import { API_BASE_URL, PACTICIPANT, PROVIDER } from "./pactOptions";
 import { transformPlaywrightMatchToPact } from "./playwrightSerialiser";
 
 await page.route(`${API_BASE_URL}/products?id=2`, async (route) => {
@@ -197,8 +200,8 @@ await page.route(`${API_BASE_URL}/products?id=2`, async (route) => {
     headers: { "Content-Type": "application/json" },
   });
   await transformPlaywrightMatchToPact(route, {
-    pacticipant: "pactflow-example-bi-directional-consumer-playwright-js",
-    provider: process.env.PACT_PROVIDER ?? "pactflow-example-bi-directional-provider-dredd",
+    pacticipant: PACTICIPANT,
+    provider: PROVIDER,
   });
 });
 ```

@@ -21,7 +21,9 @@ export default defineConfig({
     sourcemap: true,
   },
 
-  // Vite only exposes VITE_-prefixed vars by default; PACT_ is added so Pact
-  // tooling variables are readable without renaming them.
-  envPrefix: ["VITE_", "PACT_"],
+  // Only VITE_-prefixed vars are exposed to the client bundle. The Pact
+  // tooling (test/pactOptions.ts, playwright.config.ts) runs in Node and
+  // reads process.env directly, so it needs no entry here — and PACT_BROKER_TOKEN
+  // must never be added, since that would ship it to the browser.
+  envPrefix: ["VITE_"],
 });

@@ -77,8 +77,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: can-i-deploy
+    # make deploy is unconditional (deploy_app record_deployment); the
+    # Makefile's DEPLOY_TARGET guard only applies to `make ci`/`make
+    # deploy_target`, not this job, so the branch check has to live here.
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - name: Deploy
         run: BRANCH=${GIT_REF:11} make deploy
-        # The main-branch guard lives in the Makefile
