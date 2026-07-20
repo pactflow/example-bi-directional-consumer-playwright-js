@@ -129,17 +129,6 @@
       }
     },
     {
-      "includes": ["playwright.config.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            // "baseURL" is Playwright's own option name and cannot be re-cased.
-            "useNamingConvention": "off"
-          }
-        }
-      }
-    },
-    {
       // The Playwright config and the specs it drives execute in Node, not in
       // the browser bundle, so node: imports are correct there.
       "includes": ["playwright.config.ts", "test/**"],
