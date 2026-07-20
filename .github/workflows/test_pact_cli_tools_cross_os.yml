@@ -21,7 +21,7 @@ on:
 env:
   PACT_BROKER_BASE_URL: https://testdemo.pactflow.io
   PACT_BROKER_TOKEN: ${{ secrets.PACTFLOW_TOKEN_FOR_CI_CD_WORKSHOP }}
-  REACT_APP_API_BASE_URL: http://localhost:3001
+  VITE_API_BASE_URL: http://localhost:8080
   VERSION: ${{ github.sha }}
   GITHUB_REF: ${{ github.ref }}
   PACT_CLI_VERSION: ${{ github.event.inputs.PACT_CLI_VERSION }}
@@ -53,7 +53,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'windows-latest','macos-latest']
         pact_tool: ['docker', 'ruby_cli','ruby_standalone' ]
-        node-version: [14.x,16.x]
+        node-version: [24.x]
         pact_provider:
           [
             "pactflow-example-bi-directional-provider-dredd",

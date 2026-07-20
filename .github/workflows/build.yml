@@ -7,39 +7,73 @@ on:
 env:
   PACT_BROKER_BASE_URL: https://testdemo.pactflow.io
   PACT_BROKER_TOKEN: ${{ secrets.PACTFLOW_TOKEN_FOR_CI_CD_WORKSHOP }}
-  REACT_APP_API_BASE_URL: http://localhost:3001
+  VITE_API_BASE_URL: http://localhost:8080
   VERSION: ${{ github.sha }}
   GIT_REF: ${{ github.ref }}
-  PACT_PROVIDER: pactflow-example-bi-directional-provider-postman
   PACTICIPANT: pactflow-example-bi-directional-consumer-playwright-js
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
-          node-version: "24"
-      - name: Install
-        run: npm i
-      - name: Install Playwright Browsers
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Type check
+        run: npm run type-check
+      - name: Lint
+        run: npm run lint
+      - name: Format check
+        run: npm run format
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pact_provider:
+          - pactflow-example-bi-directional-provider-dredd
+          - pactflow-example-bi-directional-provider-restassured
+          - pactflow-example-bi-directional-provider-postman
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright browsers
         run: npx playwright install --with-deps
-      - name: Test
+      - name: Test for ${{ matrix.pact_provider }}
         run: make test
+        env:
+          PACT_PROVIDER: ${{ matrix.pact_provider }}
       - name: Publish pacts
         run: BRANCH=${GIT_REF:11} make publish_pacts
+        env:
+          PACT_PROVIDER: ${{ matrix.pact_provider }}
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.pact_provider }}
+          path: playwright-report/
+          retention-days: 30
 
-  # Runs on branches as well, so we know the status of our PRs
+  # Runs on branches too, so PRs show their contract status
   can-i-deploy:
     runs-on: ubuntu-latest
-    needs: test
+    needs: [lint, test]
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - name: Can I deploy?
         run: BRANCH=${GIT_REF:11} make can_i_deploy
 
-  # Only deploy from main
   deploy:
     runs-on: ubuntu-latest
     needs: can-i-deploy
@@ -47,4 +81,4 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - name: Deploy
         run: BRANCH=${GIT_REF:11} make deploy
-        # if: github.ref == 'refs/heads/main' # note this is set in our Makefile
+        # The main-branch guard lives in the Makefile
