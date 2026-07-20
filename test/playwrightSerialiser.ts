@@ -9,7 +9,11 @@ import type { Route } from "@playwright/test";
 // them (verified in isolation, not merely as an artefact of one engine
 // winning a race), but nothing guarantees a future Playwright or browser
 // version won't reintroduce them, and their presence would make the contract
-// fail verification against a provider that never sends them.
+// fail verification against a provider that never sends them. The
+// application's own `authorization` header is deliberately not blocked here:
+// it embeds the current ISO timestamp (see src/api.ts), so it still varies
+// from run to run — the one remaining source of non-determinism in the
+// published contract.
 const AUTOGEN_HEADER_BLOCKLIST = new Set([
   "access-control-expose-headers",
   "access-control-allow-credentials",
@@ -63,7 +67,12 @@ interface Pact {
 interface SerialiserOptions {
   pacticipant: string;
   provider: string;
-  /** Keep every interaction, including ones sharing a description. */
+  /**
+   * Keep every interaction, including ones sharing a description. Turn this
+   * on when the same method/path/status/query can legitimately produce
+   * different response bodies (e.g. paginated or randomised responses) and
+   * each variant needs its own interaction in the contract.
+   */
   keepDupeDescs?: boolean;
 }
 
@@ -72,7 +81,7 @@ const omitBlockedHeaders = (
 ): Record<string, string> =>
   Object.fromEntries(
     Object.entries(headers).filter(
-      ([name]) => !AUTOGEN_HEADER_BLOCKLIST.has(name),
+      ([name]) => !AUTOGEN_HEADER_BLOCKLIST.has(name.toLowerCase()),
     ),
   );
 

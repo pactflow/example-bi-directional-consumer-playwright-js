@@ -66,8 +66,6 @@
       "linter": {
         "rules": {
           "correctness": {
-            // Produces false positives for React's module layout
-            "noUnresolvedImports": "off",
             // Qwik-specific, not applicable to this React project
             "useQwikValidLexicalScope": "off",
             // Solid-specific; destructuring props is idiomatic React
