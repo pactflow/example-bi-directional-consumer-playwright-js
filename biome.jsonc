@@ -35,25 +35,32 @@
       "performance": "error",
       "preset": "recommended",
       "security": "error",
-      "style": {
-        "recommended": true,
-        // Idiomatic throughout this codebase, including the hand-written Pact
-        // serialiser; forcing if/else would be a stylistic regression.
-        "noTernary": "off"
-      },
-      "suspicious": {
-        "recommended": true,
-        // console.error/warn are the app's actual error-reporting mechanism;
-        // only stray console.log noise should be flagged.
-        "noConsole": {
-          "level": "error",
-          "options": { "allow": ["error", "warn"] }
-        }
-      }
+      "style": "error",
+      "suspicious": "error"
     }
   },
 
   "overrides": [
+    {
+      // Idiomatic throughout src/ (api.ts, App.tsx, ProductPage.tsx); forcing
+      // if/else would be a stylistic regression.
+      "includes": ["**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noTernary": "off"
+          },
+          // console.error/warn are the app's actual error-reporting mechanism;
+          // only stray console.log noise should be flagged.
+          "suspicious": {
+            "noConsole": {
+              "level": "error",
+              "options": { "allow": ["error", "warn"] }
+            }
+          }
+        }
+      }
+    },
     {
       "includes": ["**/*.tsx", "**/*.jsx"],
       "linter": {
