@@ -22,7 +22,7 @@ endif
 ## ====================
 ## Demo Specific Example Variables
 ## ====================
-REACT_APP_API_BASE_URL=http://localhost:3001
+export VITE_API_BASE_URL ?= http://localhost:8080
 PACT_FILES_LOCATION=pacts
 
 ## ====================
@@ -56,11 +56,12 @@ publish_pacts: .env
 ## Build/test tasks
 ## =====================
 
-install: npm install 
+install:
+	npm ci
 
 test: .env
 	@echo "\n========== STAGE: test ✅ (playwright) ==========\n"
-	npm run start:ui:and:test
+	npm test
 
 ## =====================
 ## Deploy tasks
