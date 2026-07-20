@@ -1,0 +1,136 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+
+  "formatter": {
+    "useEditorconfig": true
+  },
+
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+
+  // Strict by default; specific rules are disabled below where a whole group is
+  // right but one rule in it is not.
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "react": "all"
+    },
+    "rules": {
+      "a11y": "error",
+      "complexity": "error",
+      "correctness": "error",
+      "nursery": "off",
+      "performance": "error",
+      "preset": "recommended",
+      "security": "error",
+      "style": {
+        "recommended": true,
+        // Idiomatic throughout this codebase, including the hand-written Pact
+        // serialiser; forcing if/else would be a stylistic regression.
+        "noTernary": "off"
+      },
+      "suspicious": {
+        "recommended": true,
+        // console.error/warn are the app's actual error-reporting mechanism;
+        // only stray console.log noise should be flagged.
+        "noConsole": {
+          "level": "error",
+          "options": { "allow": ["error", "warn"] }
+        }
+      }
+    }
+  },
+
+  "overrides": [
+    {
+      "includes": ["**/*.tsx", "**/*.jsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            // Produces false positives for React's module layout
+            "noUnresolvedImports": "off",
+            // Qwik-specific, not applicable to this React project
+            "useQwikValidLexicalScope": "off",
+            // Solid-specific; destructuring props is idiomatic React
+            "noSolidDestructuredProps": "off"
+          },
+          "style": {
+            // Enforces i18n wrapping that an example repo does not need
+            "noJsxLiterals": "off",
+            // React components are conventionally default-exported
+            "noDefaultExport": "off"
+          },
+          "performance": {
+            // Next.js-specific, not applicable to Vite
+            "noImgElement": "off",
+            // Solid-specific, not applicable to this React project
+            "useSolidForComponent": "off"
+          },
+          "suspicious": {
+            // React-specific, not applicable here
+            "noReactSpecificProps": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/App.tsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            // The search input is rendered once per route, not repeated in a
+            // list, so a static id carries no collision risk.
+            "useUniqueElementIds": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/api.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            // "API" is a conventional initialism, and object keys here mirror
+            // the literal "Authorization" HTTP header name; neither should be
+            // re-cased.
+            "useNamingConvention": "off"
+          }
+        }
+      }
+    },
+    {
+      // Playwright and Vite both require default exports from config files.
+      "includes": ["playwright.config.ts", "vite.config.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["test/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            // Specs legitimately run long; each is one scenario end to end.
+            "noExcessiveLinesPerFunction": "off"
+          }
+        }
+      }
+    }
+  ]
+}

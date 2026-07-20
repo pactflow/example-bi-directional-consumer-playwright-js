@@ -22,6 +22,8 @@ function ErrorPage() {
           style={{ height: "100%" }}
           src="/sad_panda.gif"
           alt="A sad panda"
+          width={500}
+          height={273}
         />
         <pre className="code column col-6" style={{ wordWrap: "break-word" }}>
           <code>{state?.error ?? ""}</code>

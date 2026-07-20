@@ -1,20 +1,20 @@
 [
-    {
-        "id": "09",
-        "type": "CREDIT_CARD",
-        "name": "Gem Visa",
-        "price": 99.99
-    },
-    {
-        "id": "10",
-        "type": "CREDIT_CARD",
-        "name": "28 Degrees",
-        "price": 49.49
-    },
-    {
-        "id": "11",
-        "type": "PERSONAL_LOAN",
-        "name": "MyFlexiPay",
-        "price": 16.5
-    }
+  {
+    "id": "09",
+    "type": "CREDIT_CARD",
+    "name": "Gem Visa",
+    "price": 99.99
+  },
+  {
+    "id": "10",
+    "type": "CREDIT_CARD",
+    "name": "28 Degrees",
+    "price": 49.49
+  },
+  {
+    "id": "11",
+    "type": "PERSONAL_LOAN",
+    "name": "MyFlexiPay",
+    "price": 16.5
+  }
 ]

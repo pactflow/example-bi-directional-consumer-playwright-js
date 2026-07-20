@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import "spectre.css/dist/spectre.min.css";
 import "spectre.css/dist/spectre-icons.min.css";
 import "spectre.css/dist/spectre-exp.min.css";
-import API from "./api";
+import { api } from "./api";
 import Heading from "./Heading";
 import Layout from "./Layout";
 import type { ProductData } from "./product";
@@ -18,7 +18,8 @@ function ProductPage() {
     if (!id) {
       return;
     }
-    API.getProduct(id)
+    api
+      .getProduct(id)
       .then((r) => {
         setLoading(false);
         setProduct(r);
