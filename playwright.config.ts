@@ -25,6 +25,7 @@ export default defineConfig({
   reporter: "html",
 
   use: {
+    // biome-ignore lint/style/useNamingConvention: "baseURL" is Playwright's own option name and cannot be re-cased.
     baseURL: BASE_URL,
     trace: "on-first-retry",
   },

@@ -2,8 +2,14 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { Route } from "@playwright/test";
 
-// Headers that vary per run or per browser. Leaving them in the contract would
-// make it fail verification against a provider that never sent them.
+// Headers deliberately excluded from the published contract. Most of these
+// are transport/session details that Playwright or the browser attaches and
+// that carry no contract meaning. connection, cache-control and pragma are
+// included defensively: none of chromium, firefox or webkit currently emits
+// them (verified in isolation, not merely as an artefact of one engine
+// winning a race), but nothing guarantees a future Playwright or browser
+// version won't reintroduce them, and their presence would make the contract
+// fail verification against a provider that never sends them.
 const AUTOGEN_HEADER_BLOCKLIST = new Set([
   "access-control-expose-headers",
   "access-control-allow-credentials",
@@ -23,6 +29,9 @@ const AUTOGEN_HEADER_BLOCKLIST = new Set([
   "accept-language",
   "date",
   "x-powered-by",
+  "connection",
+  "cache-control",
+  "pragma",
 ]);
 
 interface PactInteraction {
@@ -140,9 +149,12 @@ const transformPlaywrightMatchToPact = async (
     },
   });
 
-  pact.interactions = [...pact.interactions, interaction];
+  const updatedPact = {
+    ...pact,
+    interactions: [...pact.interactions, interaction],
+  };
 
-  writePact(pact, filePath, keepDupeDescs);
+  writePact(updatedPact, filePath, keepDupeDescs);
 };
 
 export type { Pact, PactInteraction, SerialiserOptions };
