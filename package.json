@@ -29,7 +29,7 @@
     "check:fix": "biome check --write --unsafe ."
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.4",
+    "@biomejs/biome": "2.5.5",
     "@playwright/test": "1.61.1",
     "@tsconfig/node24": "24.0.4",
     "@tsconfig/vite-react": "8.1.1",
