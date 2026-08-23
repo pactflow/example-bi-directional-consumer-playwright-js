@@ -39,6 +39,6 @@
     "@vitejs/plugin-react": "6.1.0",
     "dotenv": "17.4.2",
     "typescript": "7.0.2",
-    "vite": "8.2.1"
+    "vite": "8.2.2"
   }
 }
