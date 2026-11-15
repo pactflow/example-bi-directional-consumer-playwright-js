@@ -31,7 +31,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
     "@playwright/test": "1.65.0",
-    "@tsconfig/node24": "24.0.5",
+    "@tsconfig/node24": "24.0.6",
     "@tsconfig/vite-react": "8.1.1",
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
