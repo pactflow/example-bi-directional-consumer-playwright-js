@@ -33,7 +33,7 @@
     "@playwright/test": "1.65.1",
     "@tsconfig/node24": "24.0.6",
     "@tsconfig/vite-react": "8.1.2",
-    "@types/node": "26.6.6",
+    "@types/node": "26.6.10",
     "@types/react": "19.3.2",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.3.0",
